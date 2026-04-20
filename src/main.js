@@ -165,4 +165,85 @@ sceneEl.addEventListener('loaded', () => {
         }
         gsap.to(slideshowPlane, { opacity: 0, duration: 0.2 });
     });
+
+    // ============================================
+    // VIDEO RECORDING LOGIC
+    // ============================================
+    const recordBtn = document.querySelector('#record-btn');
+    let mediaRecorder;
+    let recordedChunks = [];
+    let isRecording = false;
+
+    // Helper to merge layers and record
+    const captureStream = () => {
+        const videoEl = document.querySelector('video'); // MindAR camera feed
+        const canvasEl = document.querySelector('canvas.a-canvas'); // A-Frame 3D objects
+        
+        // Create a hidden canvas for merging
+        const compositeCanvas = document.createElement('canvas');
+        compositeCanvas.width = canvasEl.width;
+        compositeCanvas.height = canvasEl.height;
+        const ctx = compositeCanvas.getContext('2d');
+
+        const stream = compositeCanvas.captureStream(30); // 30 FPS
+        
+        const drawFrame = () => {
+            if (!isRecording) return;
+            
+            // 1. Draw camera feed
+            if (videoEl) {
+                ctx.drawImage(videoEl, 0, 0, compositeCanvas.width, compositeCanvas.height);
+            }
+            
+            // 2. Draw A-Frame content on top
+            ctx.drawImage(canvasEl, 0, 0);
+            
+            requestAnimationFrame(drawFrame);
+        };
+
+        drawFrame();
+        return stream;
+    };
+
+    recordBtn.addEventListener('click', () => {
+        if (!isRecording) {
+            // START RECORDING
+            recordedChunks = [];
+            const stream = captureStream();
+            
+            mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm;codecs=vp8,opus'
+            });
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `AR-Experience-${Date.now()}.webm`;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            recordBtn.classList.add('recording');
+            console.log('🔴 Recording started...');
+        } else {
+            // STOP RECORDING
+            mediaRecorder.stop();
+            isRecording = false;
+            recordBtn.classList.remove('recording');
+            console.log('⬜ Recording stopped. Saving...');
+        }
+    });
 });

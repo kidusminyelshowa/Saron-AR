@@ -31,6 +31,51 @@
       padding: 10px 20px;
       border-radius: 20px;
       display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    #record-btn {
+      width: 70px;
+      height: 70px;
+      background: white;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+      pointer-events: auto;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    #record-btn::after {
+      content: '';
+      width: 30px;
+      height: 30px;
+      background: #ff4444;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+    }
+
+    #record-btn.recording {
+      border-color: #ff4444;
+      animation: pulse 1.5s infinite;
+    }
+
+    #record-btn.recording::after {
+      border-radius: 4px;
+      width: 25px;
+      height: 25px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 68, 68, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
     }
   </style>
 </head>
@@ -38,10 +83,11 @@
 <body>
   <div id="ui-overlay">
     <div class="instruction">Point your camera at the mural image</div>
+    <button id="record-btn" aria-label="Record AR Experience"></button>
   </div>
 
   <a-scene mindar-image="imageTargetSrc: /targets.mind;" color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
+    renderer="colorManagement: true, physicallyCorrectLights, preserveDrawingBuffer: true" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
     <a-assets>
       <video id="blob-video" src="/assets/Blob.webm" preload="auto" loop="true" muted="true" playsinline
