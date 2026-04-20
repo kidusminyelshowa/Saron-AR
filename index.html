@@ -40,18 +40,18 @@
     <div class="instruction">Point your camera at the mural image</div>
   </div>
 
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind;" color-space="sRGB"
+  <a-scene mindar-image="imageTargetSrc: /targets.mind;" color-space="sRGB"
     renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
     <a-assets>
-      <video id="blob-video" src="./assets/Blob.webm" preload="auto" loop="true" muted="true" playsinline
+      <video id="blob-video" src="/assets/Blob.webm" preload="auto" loop="true" muted="true" playsinline
         webkit-playsinline></video>
       <!-- Replace this URL with your local ./assets/skateboard.glb once you have it -->
-      <a-asset-item id="skateboardModel" src="./assets/Skateboard.glb"></a-asset-item>
-      <img id="board-art" src="./assets/Board Art.png">
-      <img id="skatepark-d" src="./assets/skate parkd.jpg">
-      <img id="skatepark-e" src="./assets/skate parke.jpg">
-      <img id="skatepark-f" src="./assets/skate park f.jpg">
+      <a-asset-item id="skateboardModel" src="/assets/Skateboard.glb"></a-asset-item>
+      <img id="board-art" src="/assets/Board Art.png">
+      <img id="skatepark-d" src="/assets/skate parkd.jpg">
+      <img id="skatepark-e" src="/assets/skate parke.jpg">
+      <img id="skatepark-f" src="/assets/skate park f.jpg">
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -69,7 +69,7 @@
       <!-- ============================================== -->
       <!-- 2D Element (Custom Skater Girl Image)          -->
       <!-- ============================================== -->
-      <a-image id="ui-plane" src="./assets/Skater Girl.png" position="0 0 0.05" width="2.59" height="1"
+      <a-image id="ui-plane" src="/assets/Skater Girl.png" position="0 0 0.05" width="2.59" height="1"
         transparent="true">
       </a-image>
 

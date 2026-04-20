@@ -18,7 +18,7 @@ sceneEl.addEventListener('loaded', () => {
         console.log('📦 Skateboard Model Loaded, applying texture...');
         const mesh = box.getObject3D('mesh');
         const textureLoader = new THREE.TextureLoader();
-        const boardTexture = textureLoader.load('./assets/Board Art.png');
+        const boardTexture = textureLoader.load('/assets/Board Art.png');
 
         // Rotate texture 90 degrees clockwise (-90 degrees)
         boardTexture.center.set(0.5, 0.5);
