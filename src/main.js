@@ -154,7 +154,7 @@ sceneEl.addEventListener('loaded', () => {
                     gsap.to(slideshowPlane, { opacity: 1, duration: 0.3 });
                 }
             });
-        }, 1000); // Switch every 1 second
+        }, 3000); // Switch every 3 seconds
     });
 
     target2.addEventListener('targetLost', () => {

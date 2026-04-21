@@ -86,8 +86,11 @@
     <button id="record-btn" aria-label="Record AR Experience"></button>
   </div>
 
-  <a-scene mindar-image="imageTargetSrc: /targets.mind;" color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights, preserveDrawingBuffer: true" vr-mode-ui="enabled: false"
+  <a-scene
+    mindar-image="imageTargetSrc: /targets.mind; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 25; warmupTolerance: 10; uiLoading: no;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights, preserveDrawingBuffer: true, antialias: true"
+    vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
     <a-assets>
       <video id="blob-video" src="/assets/Blob.webm" preload="auto" loop="true" muted="true" playsinline
