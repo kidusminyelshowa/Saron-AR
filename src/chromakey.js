@@ -1,22 +1,10 @@
 AFRAME.registerShader('chromakey', {
   schema: {
-    src: { type: 'map' },
-    color: { type: 'color', default: '#00FF00' },
-    similarity: { type: 'number', default: 0.3 },
-    smoothness: { type: 'number', default: 0.1 },
-    opacity: { type: 'number', default: 1.0 }
-  },
-
-  init: function(data) {
-    this.textureLoader = new THREE.TextureLoader();
-  },
-
-  update: function(data) {
-    this.material.uniforms.src.value = data.src;
-    this.material.uniforms.color.value = new THREE.Color(data.color);
-    this.material.uniforms.similarity.value = data.similarity;
-    this.material.uniforms.smoothness.value = data.smoothness;
-    this.material.uniforms.opacity.value = data.opacity;
+    src: {type: 'map', is: 'uniform'},
+    color: {type: 'color', is: 'uniform', default: '#00FF00'},
+    similarity: {type: 'number', is: 'uniform', default: 0.3},
+    smoothness: {type: 'number', is: 'uniform', default: 0.1},
+    opacity: {type: 'number', is: 'uniform', default: 1.0}
   },
 
   vertexShader: `
@@ -37,8 +25,13 @@ AFRAME.registerShader('chromakey', {
 
     void main() {
       vec4 texColor = texture2D(src, vUv);
+      if (texColor.a == 0.0) discard; // Handle existing alpha if any
+
       float dist = distance(texColor.rgb, color);
       float alpha = smoothstep(similarity, similarity + smoothness, dist);
+      
+      if (alpha < 0.01) discard; // Performance optimization for transparent pixels
+
       gl_FragColor = vec4(texColor.rgb, alpha * opacity);
     }
   `
