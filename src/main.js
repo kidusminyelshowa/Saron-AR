@@ -6,7 +6,7 @@ const sceneEl = document.querySelector('a-scene');
 sceneEl.addEventListener('loaded', () => {
     console.log('🚀 AR Scene Loaded');
 
-    const targetEntity = document.querySelector('[mindar-image-target="targetIndex: 1"]');
+    const skateboardTarget = document.querySelector('[mindar-image-target="targetIndex: 0"]');
     const plane = document.querySelector('#ui-plane');
     const box = document.querySelector('#hero-box');
 
@@ -55,7 +55,7 @@ sceneEl.addEventListener('loaded', () => {
     });
 
     // 1. Initial State (Final positions, hidden opacity for smooth pop)
-    gsap.set(plane.object3D.position, { x: 0, y: 0, z: 0.05 });
+    gsap.set(plane.object3D.position, { x: 0, y: 0, z: 0.02 });
     gsap.set(plane.object3D.scale, { x: 1, y: 1, z: 1 });
     gsap.set(plane, { opacity: 0 });
 
@@ -63,16 +63,16 @@ sceneEl.addEventListener('loaded', () => {
     gsap.set(videoEntity.object3D.position, { x: 0, y: 0, z: 0.01 });
     gsap.set(videoEntity, { opacity: 0 });
 
-    gsap.set(box.object3D.scale, { x: 1, y: 1, z: 1 });
+    gsap.set(box.object3D.scale, { x: 0.546, y: 0.546, z: 0.546 });
     gsap.set(box.object3D.rotation, { x: 0, y: 0, z: 0 });
-    gsap.set(box.object3D.position, { x: 0, y: 0, z: 0.1 });
+    gsap.set(box.object3D.position, { x: 0, y: 0, z: 0.03 });
     gsap.set(box, { opacity: 0 });
 
     let bobbingAnimation;
 
     // 2. Listen for "Found" event
-    targetEntity.addEventListener('targetFound', event => {
-        console.log('🎯 Target Found!');
+    skateboardTarget.addEventListener('targetFound', event => {
+        console.log('🎯 Skateboard Found!');
 
         // Start Video
         blobVideo.play();
@@ -94,7 +94,7 @@ sceneEl.addEventListener('loaded', () => {
     });
 
     // 3. Listen for "Lost" event
-    targetEntity.addEventListener('targetLost', event => {
+    skateboardTarget.addEventListener('targetLost', event => {
         console.log('❓ Target Lost');
         if (bobbingAnimation) bobbingAnimation.kill();
 
@@ -112,26 +112,26 @@ sceneEl.addEventListener('loaded', () => {
     // ============================================
     // ARTWORK 2: Skate Park Slideshow (Target 0)
     // ============================================
-    const target2 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
+    const skateparkTarget = document.querySelector('[mindar-image-target="targetIndex: 1"]');
     const slideshowPlane = document.querySelector('#slideshow-plane');
     const slideData = [
-        { id: '#skatepark-d', extraWidth: 2.59 },
-        { id: '#skatepark-e', extraWidth: 2.11 }, // Estimated from preview: roughly 2.11
-        { id: '#skatepark-f', extraWidth: 1.25 }  // Estimated from preview: much closer to square, roughly 1.25
+        { id: '#skatepark-d', width: 1.413927, height: 0.545918 },
+        { id: '#skatepark-e', width: 1.152060, height: 0.545918 },
+        { id: '#skatepark-f', width: 0.682500, height: 0.545918 }
     ];
     let slideIndex = 0;
     let slideshowInterval = null;
 
     gsap.set(slideshowPlane, { opacity: 0 });
 
-    target2.addEventListener('targetFound', () => {
-        console.log('🎯 Target 2 Found! Starting slideshow...');
+    skateparkTarget.addEventListener('targetFound', () => {
+        console.log('🎯 Skate Park Found!');
         slideIndex = 0;
         const current = slideData[slideIndex];
         
         slideshowPlane.setAttribute('src', current.id);
-        slideshowPlane.setAttribute('width', current.extraWidth);
-        slideshowPlane.setAttribute('height', 1);
+        slideshowPlane.setAttribute('width', current.width);
+        slideshowPlane.setAttribute('height', current.height);
 
         // Fade in
         gsap.to(slideshowPlane, { opacity: 1, duration: 0.3 });
@@ -141,23 +141,23 @@ sceneEl.addEventListener('loaded', () => {
             // Fade out current
             gsap.to(slideshowPlane, {
                 opacity: 0,
-                duration: 0.3,
+                duration: 0.15,
                 onComplete: () => {
                     slideIndex = (slideIndex + 1) % slideData.length;
                     const next = slideData[slideIndex];
                     
                     slideshowPlane.setAttribute('src', next.id);
-                    slideshowPlane.setAttribute('width', next.extraWidth);
-                    slideshowPlane.setAttribute('height', 1);
+                    slideshowPlane.setAttribute('width', next.width);
+                    slideshowPlane.setAttribute('height', next.height);
                     
                     // Fade in next
-                    gsap.to(slideshowPlane, { opacity: 1, duration: 0.3 });
+                    gsap.to(slideshowPlane, { opacity: 1, duration: 0.15 });
                 }
             });
-        }, 3000); // Switch every 3 seconds
+        }, 750); // Switch every 0.75 seconds
     });
 
-    target2.addEventListener('targetLost', () => {
+    skateparkTarget.addEventListener('targetLost', () => {
         console.log('❓ Target 2 Lost');
         if (slideshowInterval) {
             clearInterval(slideshowInterval);
@@ -173,9 +173,9 @@ sceneEl.addEventListener('loaded', () => {
     const alliencePlanes = [
         document.querySelector('#allience-logs-plane'),
         document.querySelector('#allience-barrel-plane'),
-        document.querySelector('#allience-mother-plane'),
-        document.querySelector('#allience-words-plane')
+        document.querySelector('#allience-mother-plane')
     ];
+    const allienceBarrelVideo = document.querySelector('#allience-barrel-video');
 
     // 1. Initial State
     alliencePlanes.forEach((p, index) => {
@@ -189,6 +189,9 @@ sceneEl.addEventListener('loaded', () => {
     target3.addEventListener('targetFound', () => {
         console.log('🎯 Target 3 Found! Revealing Allience design...');
         
+        // Start Video
+        allienceBarrelVideo.play();
+
         // Fade in layers with a slight stagger
         gsap.to(alliencePlanes, {
             opacity: 1,
@@ -212,6 +215,10 @@ sceneEl.addEventListener('loaded', () => {
     target3.addEventListener('targetLost', () => {
         console.log('❓ Target 3 Lost');
         
+        // Pause and reset video
+        allienceBarrelVideo.pause();
+        allienceBarrelVideo.currentTime = 0;
+
         // Kill animations
         allienceAnimations.forEach(anim => anim.kill());
         allienceAnimations = [];
