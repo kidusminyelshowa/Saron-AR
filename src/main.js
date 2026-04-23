@@ -57,16 +57,16 @@ sceneEl.addEventListener('loaded', () => {
     // 1. Initial State (Final positions, hidden opacity for smooth pop)
     gsap.set(plane.object3D.position, { x: 0, y: 0, z: 0.02 });
     gsap.set(plane.object3D.scale, { x: 1, y: 1, z: 1 });
-    gsap.set(plane, { opacity: 0 });
+    gsap.set(plane, { attr: { opacity: 0 } });
 
     gsap.set(videoEntity.object3D.scale, { x: 1, y: 1, z: 1 });
     gsap.set(videoEntity.object3D.position, { x: 0, y: 0, z: 0.01 });
-    gsap.set(videoEntity, { opacity: 0 });
+    gsap.set(videoEntity, { attr: { opacity: 0 } });
 
     gsap.set(box.object3D.scale, { x: 0.546, y: 0.546, z: 0.546 });
     gsap.set(box.object3D.rotation, { x: 0, y: 0, z: 0 });
     gsap.set(box.object3D.position, { x: 0, y: 0, z: 0.03 });
-    gsap.set(box, { opacity: 0 });
+    gsap.set(box, { attr: { opacity: 0 } });
 
     let bobbingAnimation;
 
@@ -79,7 +79,7 @@ sceneEl.addEventListener('loaded', () => {
 
         // Simple Instant Reveal (Quick fade instead of sweep)
         gsap.to([plane, videoEntity, box], {
-            opacity: 1,
+            attr: { opacity: 1 },
             duration: 0.2
         });
 
@@ -104,7 +104,7 @@ sceneEl.addEventListener('loaded', () => {
 
         // Hide elements smoothly
         gsap.to([plane, videoEntity, box], {
-            opacity: 0,
+            attr: { opacity: 0 },
             duration: 0.2
         });
     });
@@ -122,7 +122,7 @@ sceneEl.addEventListener('loaded', () => {
     let slideIndex = 0;
     let slideshowInterval = null;
 
-    gsap.set(slideshowPlane, { opacity: 0 });
+    gsap.set(slideshowPlane, { attr: { opacity: 0 } });
 
     skateparkTarget.addEventListener('targetFound', () => {
         console.log('🎯 Skate Park Found!');
@@ -134,13 +134,13 @@ sceneEl.addEventListener('loaded', () => {
         slideshowPlane.setAttribute('height', current.height);
 
         // Fade in
-        gsap.to(slideshowPlane, { opacity: 1, duration: 0.3 });
+        gsap.to(slideshowPlane, { attr: { opacity: 1 }, duration: 0.3 });
 
         // Start cycling images
         slideshowInterval = setInterval(() => {
             // Fade out current
             gsap.to(slideshowPlane, {
-                opacity: 0,
+                attr: { opacity: 0 },
                 duration: 0.15,
                 onComplete: () => {
                     slideIndex = (slideIndex + 1) % slideData.length;
@@ -151,7 +151,7 @@ sceneEl.addEventListener('loaded', () => {
                     slideshowPlane.setAttribute('height', next.height);
                     
                     // Fade in next
-                    gsap.to(slideshowPlane, { opacity: 1, duration: 0.15 });
+                    gsap.to(slideshowPlane, { attr: { opacity: 1 }, duration: 0.15 });
                 }
             });
         }, 750); // Switch every 0.75 seconds
@@ -163,7 +163,7 @@ sceneEl.addEventListener('loaded', () => {
             clearInterval(slideshowInterval);
             slideshowInterval = null;
         }
-        gsap.to(slideshowPlane, { opacity: 0, duration: 0.2 });
+        gsap.to(slideshowPlane, { attr: { opacity: 0 }, duration: 0.2 });
     });
 
     // ============================================
@@ -179,7 +179,7 @@ sceneEl.addEventListener('loaded', () => {
 
     // 1. Initial State
     alliencePlanes.forEach((p, index) => {
-        gsap.set(p, { opacity: 0 });
+        gsap.set(p, { attr: { opacity: 0 } });
         // Set initial Z positions from HTML but ensure they are ready for GSAP
         gsap.set(p.object3D.position, { z: 0.01 * (index + 1) });
     });
@@ -189,12 +189,21 @@ sceneEl.addEventListener('loaded', () => {
     target3.addEventListener('targetFound', () => {
         console.log('🎯 Target 3 Found! Revealing Allience design...');
         
-        // Start Video
-        allienceBarrelVideo.play();
+        // Start Video (with iOS fallback)
+        const playPromise = allienceBarrelVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('✅ Allience Barrel Video playing');
+            }).catch(() => {
+                // iOS may reject play() without user gesture — retry after ensuring muted
+                allienceBarrelVideo.muted = true;
+                allienceBarrelVideo.play().catch(e => console.warn('Video play blocked:', e));
+            });
+        }
 
         // Fade in layers with a slight stagger
         gsap.to(alliencePlanes, {
-            opacity: 1,
+            attr: { opacity: 1 },
             duration: 0.5,
             stagger: 0.1
         });
@@ -225,7 +234,7 @@ sceneEl.addEventListener('loaded', () => {
 
         // Fade out
         gsap.to(alliencePlanes, {
-            opacity: 0,
+            attr: { opacity: 0 },
             duration: 0.3
         });
     });
