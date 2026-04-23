@@ -167,6 +167,63 @@ sceneEl.addEventListener('loaded', () => {
     });
 
     // ============================================
+    // ARTWORK 3: Allience Design Stacked (Target 2)
+    // ============================================
+    const target3 = document.querySelector('[mindar-image-target="targetIndex: 2"]');
+    const alliencePlanes = [
+        document.querySelector('#allience-logs-plane'),
+        document.querySelector('#allience-barrel-plane'),
+        document.querySelector('#allience-mother-plane'),
+        document.querySelector('#allience-words-plane')
+    ];
+
+    // 1. Initial State
+    alliencePlanes.forEach((p, index) => {
+        gsap.set(p, { opacity: 0 });
+        // Set initial Z positions from HTML but ensure they are ready for GSAP
+        gsap.set(p.object3D.position, { z: 0.01 * (index + 1) });
+    });
+
+    let allienceAnimations = [];
+
+    target3.addEventListener('targetFound', () => {
+        console.log('🎯 Target 3 Found! Revealing Allience design...');
+        
+        // Fade in layers with a slight stagger
+        gsap.to(alliencePlanes, {
+            opacity: 1,
+            duration: 0.5,
+            stagger: 0.1
+        });
+
+        // Add unique bobbing/parallax to each layer
+        alliencePlanes.forEach((p, index) => {
+            const anim = gsap.to(p.object3D.position, {
+                y: `+=${0.01 + (index * 0.005)}`,
+                duration: 2 + (index * 0.5),
+                yoyo: true,
+                repeat: -1,
+                ease: "sine.inOut"
+            });
+            allienceAnimations.push(anim);
+        });
+    });
+
+    target3.addEventListener('targetLost', () => {
+        console.log('❓ Target 3 Lost');
+        
+        // Kill animations
+        allienceAnimations.forEach(anim => anim.kill());
+        allienceAnimations = [];
+
+        // Fade out
+        gsap.to(alliencePlanes, {
+            opacity: 0,
+            duration: 0.3
+        });
+    });
+
+    // ============================================
     // VIDEO RECORDING LOGIC
     // ============================================
     const recordBtn = document.querySelector('#record-btn');

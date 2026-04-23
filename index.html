@@ -101,6 +101,10 @@
       <img id="skatepark-d" src="/assets/skate parkd.jpg">
       <img id="skatepark-e" src="/assets/skate parke.jpg">
       <img id="skatepark-f" src="/assets/skate park f.jpg">
+      <img id="allience-mother" src="/assets/Allience design_Mother.png">
+      <img id="allience-words" src="/assets/Allience design_Words.png">
+      <img id="allience-logs" src="/assets/Allience design_Logs.png">
+      <img id="allience-barrel" src="/assets/Allience design_Barrel.png">
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -146,6 +150,17 @@
                transparent="true">
       </a-image>
 
+      <a-light type="ambient" color="#FFF" intensity="1"></a-light>
+    </a-entity>
+
+    <!-- ============================================== -->
+    <!-- ARTWORK 3: Allience Design Stacked (targetIndex: 2) -->
+    <!-- ============================================== -->
+    <a-entity mindar-image-target="targetIndex: 2">
+      <a-image id="allience-logs-plane" src="#allience-logs" position="0 0 0.01" width="1.413927" height="1" transparent="true"></a-image>
+      <a-image id="allience-barrel-plane" src="#allience-barrel" position="0 0 0.02" width="1.413927" height="1" transparent="true"></a-image>
+      <a-image id="allience-mother-plane" src="#allience-mother" position="0 0 0.03" width="1.413927" height="1" transparent="true"></a-image>
+      <a-image id="allience-words-plane" src="#allience-words" position="0 0 0.04" width="1.413927" height="1" transparent="true"></a-image>
       <a-light type="ambient" color="#FFF" intensity="1"></a-light>
     </a-entity>
   </a-scene>
