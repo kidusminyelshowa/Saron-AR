@@ -1,4 +1,5 @@
 import { gsap } from 'gsap';
+import './chromakey.js';
 
 // Wait for the scene to load
 const sceneEl = document.querySelector('a-scene');
