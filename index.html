@@ -103,9 +103,9 @@
       <img id="skatepark-f" src="/assets/skate park f.jpg">
       <img id="allience-mother" src="/assets/Allience design_Mother.png">
       <img id="allience-logs" src="/assets/Allience design_Logs.png">
-      <video id="allience-barrel-video" preload="auto" autoplay loop="true" muted="true" playsinline webkit-playsinline>
+      <video id="allience-barrel-video" src="/assets/Barrel.mov" preload="auto" autoplay loop="true" muted="true" playsinline webkit-playsinline>
         <source src="/assets/Allience design_Barrel.webm" type="video/webm">
-        <source src="/assets/Barrel.mov" type="video/mp4">
+        <source src="/assets/Barrel.mov" type='video/quicktime; codecs="hvc1"'>
       </video>
     </a-assets>
 
@@ -160,7 +160,7 @@
     <!-- ============================================== -->
     <a-entity mindar-image-target="targetIndex: 2">
       <a-image id="allience-logs-plane" src="#allience-logs" position="0 0 0.01" width="1.413927" height="1" transparent="true"></a-image>
-      <a-video id="allience-barrel-plane" src="#allience-barrel-video" position="0 0 0.02" width="1.413927" height="1" material="transparent: true; shader: flat;"></a-video>
+      <a-video id="allience-barrel-plane" src="#allience-barrel-video" position="0 0 0.02" width="1.413927" height="1" material="transparent: true; shader: flat; alphaTest: 0.01; depthWrite: false;"></a-video>
       <a-image id="allience-mother-plane" src="#allience-mother" position="0 0 0.03" width="1.413927" height="1" transparent="true"></a-image>
       <a-light type="ambient" color="#FFF" intensity="1"></a-light>
     </a-entity>
