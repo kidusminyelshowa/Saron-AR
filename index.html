@@ -1,65 +1,19 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Interactive WebAR Mural Experience — point your camera at the artwork to reveal augmented reality content.">
-  <title>AR Mural Experience</title>
+  <title>AR Mural Prototype</title>
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <!-- MindAR for A-Frame -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
   <style>
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
-    /* ── Loading Screen ── */
-    #loading-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: #0a0a0a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-
-    #loading-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    #loading-screen .spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid rgba(255, 255, 255, 0.1);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    #loading-screen p {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
-      letter-spacing: 0.05em;
-      margin: 0;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* ── UI Overlay ── */
+    /* Optional UI overlay */
     #ui-overlay {
       position: absolute;
       bottom: 20px;
@@ -67,24 +21,17 @@
       width: 100%;
       text-align: center;
       z-index: 1000;
+      font-family: sans-serif;
       pointer-events: none;
     }
 
     .instruction {
       background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
       color: white;
       padding: 10px 20px;
       border-radius: 20px;
       display: inline-block;
       margin-bottom: 20px;
-      font-size: 14px;
-      transition: opacity 0.4s ease;
-    }
-
-    .instruction.hidden {
-      opacity: 0;
     }
 
     #record-btn {
@@ -134,34 +81,29 @@
 </head>
 
 <body>
-  <!-- Loading screen shown while heavy assets download -->
-  <div id="loading-screen">
-    <div class="spinner"></div>
-    <p>Loading AR experience…</p>
-  </div>
-
   <div id="ui-overlay">
-    <div id="instruction-text" class="instruction">Point your camera at the mural</div>
+    <div class="instruction">Point your camera at the mural image</div>
     <button id="record-btn" aria-label="Record AR Experience"></button>
   </div>
 
   <a-scene
     mindar-image="imageTargetSrc: /targets.mind; filterMinCF: 0.0001; filterBeta: 0.001; missTolerance: 25; warmupTolerance: 10; uiLoading: no;"
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights, antialias: true"
+    renderer="colorManagement: true, physicallyCorrectLights, preserveDrawingBuffer: true, antialias: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
-    <a-assets timeout="60000">
+    <a-assets>
       <video id="blob-video" src="/assets/Blob.webm" preload="auto" loop="true" muted="true" playsinline
-        webkit-playsinline crossorigin="anonymous"></video>
+        webkit-playsinline></video>
+      <!-- Replace this URL with your local ./assets/skateboard.glb once you have it -->
       <a-asset-item id="skateboardModel" src="/assets/Skateboard.glb"></a-asset-item>
-      <img id="board-art" src="/assets/Board Art.png" crossorigin="anonymous">
-      <img id="skatepark-d" src="/assets/skate parkd.jpg" crossorigin="anonymous">
-      <img id="skatepark-e" src="/assets/skate parke.jpg" crossorigin="anonymous">
-      <img id="skatepark-f" src="/assets/skate park f.jpg" crossorigin="anonymous">
-      <img id="allience-mother" src="/assets/Allience design_Mother.png" crossorigin="anonymous">
-      <img id="allience-logs" src="/assets/Allience design_Logs.png" crossorigin="anonymous">
-      <video id="allience-barrel-video" preload="auto" loop="true" muted="true" playsinline webkit-playsinline crossorigin="anonymous">
+      <img id="board-art" src="/assets/Board Art.png">
+      <img id="skatepark-d" src="/assets/skate parkd.jpg">
+      <img id="skatepark-e" src="/assets/skate parke.jpg">
+      <img id="skatepark-f" src="/assets/skate park f.jpg">
+      <img id="allience-mother" src="/assets/Allience design_Mother.png">
+      <img id="allience-logs" src="/assets/Allience design_Logs.png">
+      <video id="allience-barrel-video" preload="auto" loop="true" muted="true" playsinline webkit-playsinline>
         <source src="/assets/Allience design_Barrel.webm" type="video/webm">
         <source src="/assets/Barrel.mov" type="video/quicktime">
       </video>
@@ -169,22 +111,34 @@
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- ============================================== -->
-    <!-- ARTWORK 1: Skateboard (targetIndex: 0)         -->
-    <!-- ============================================== -->
+    <!-- Entity bound to the target image (targetIndex: 0) -->
     <a-entity mindar-image-target="targetIndex: 0">
+
+      <!-- ============================================== -->
+      <!-- Background Video (Blob)                        -->
+      <!-- ============================================== -->
       <a-video id="video-entity" src="#blob-video" position="0 0 0.01" width="1.413927" height="0.545918"
-        material="transparent: true; alphaTest: 0.5;"></a-video>
+        material="transparent: true; alphaTest: 0.5;">
+      </a-video>
 
+      <!-- ============================================== -->
+      <!-- 2D Element (Custom Skater Girl Image)          -->
+      <!-- ============================================== -->
       <a-image id="ui-plane" src="/assets/Skater Girl.png" position="0 0 0.02" width="1.413927" height="0.545918"
-        transparent="true"></a-image>
+        transparent="true">
+      </a-image>
 
+
+      <!-- ============================================== -->
+      <!-- 3D Element (GLTF Model)                        -->
+      <!-- ============================================== -->
       <a-gltf-model id="hero-box" src="#skateboardModel" position="0 0 0.03" scale="0.546 0.546 0.546" rotation="0 0 0">
       </a-gltf-model>
 
       <!-- Lighting for 3D elements -->
       <a-light type="ambient" color="#FFF" intensity="1"></a-light>
       <a-light type="directional" color="#FFF" intensity="2.5" position="-1 2 2"></a-light>
+
     </a-entity>
 
     <!-- ============================================== -->
